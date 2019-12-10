@@ -3,8 +3,8 @@ set -u
 source shared.sh
 
 for version in $VERSIONS; do
-    tag=envtpl-dev:$version
+    tag=pyenvtpl-dev:$version
     echo "Testing Python $version"
-    docker run -it -v $PWD/..:/envtpl-dev/envtpl $tag
+    docker run -it -v $PWD/..:/pyenvtpl-dev/pyenvtpl $tag
     echo
 done

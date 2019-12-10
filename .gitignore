@@ -2,5 +2,5 @@
 *.pyc
 build
 dist
-envtpl.egg-info
+pyenvtpl.egg-info
 /.tox

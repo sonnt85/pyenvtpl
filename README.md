@@ -1,15 +1,15 @@
-envtpl
+pyenvtpl
 ======
 
 _Render jinja2 templates on the command line with shell environment variables_
 
-[![Build Status](https://travis-ci.org/andreasjansson/envtpl.svg?branch=master)](https://travis-ci.org/andreasjansson/envtpl)
-[![PyPI version](https://badge.fury.io/py/envtpl.svg)](https://badge.fury.io/py/envtpl)
+[![Build Status](https://travis-ci.org/andreasjansson/pyenvtpl.svg?branch=master)](https://travis-ci.org/andreasjansson/pyenvtpl)
+[![PyPI version](https://badge.fury.io/py/pyenvtpl.svg)](https://badge.fury.io/py/pyenvtpl)
 
 Installation
 ------------
 
-    pip install envtpl
+    pip install pyenvtpl
 
 How-to
 ------
@@ -19,14 +19,14 @@ Say you have a configuration file called whatever.conf that looks like this
     foo = 123
     bar = "abc"
 
-You can use envtpl to set `foo` and `bar` from the command line by creating a file called whatever.conf.tpl
+You can use pyenvtpl to set `foo` and `bar` from the command line by creating a file called whatever.conf.tpl
 
     foo = {{ FOO }}
     bar = "{{ BAR }}"
     
 If you run
 
-    FOO=123 BAR=abc envtpl < whatever.conf.tpl > whatever.conf
+    FOO=123 BAR=abc pyenvtpl < whatever.conf.tpl > whatever.conf
 
 you'll get back the original whatever.conf.
 
@@ -37,7 +37,7 @@ You can also specify default values
 
 Running
 
-    FOO=456 envtpl < whatever.conf.tpl > whatever.conf
+    FOO=456 pyenvtpl < whatever.conf.tpl > whatever.conf
 
 will generate
 
@@ -53,9 +53,9 @@ This is all standard [Jinja2 syntax](http://jinja.pocoo.org/docs/templates/), so
     {% endif %}
     bar = "abc"
 
-If an environment variable is missing, envtpl will throw an error
+If an environment variable is missing, pyenvtpl will throw an error
 
-    $ echo '{{ FOO }} {{ BAR }}' | FOO=123 envtpl
+    $ echo '{{ FOO }} {{ BAR }}' | FOO=123 pyenvtpl
     Error: 'BAR' is undefined
 
 You can change this behaviour to insert empty strings instead by passing the `--allow-missing` flag.
@@ -63,15 +63,15 @@ You can change this behaviour to insert empty strings instead by passing the `--
 Instead of reading from stdin and writing to stdout, you can pass the input filename as an optional positional argument,
 and set the output filename with the `--output-file` (`-o`) argument.
 
-    envtpl -o whatever.conf  whatever.conf.tpl
+    pyenvtpl -o whatever.conf  whatever.conf.tpl
 
 As a convenience, if you don't specify an output filename and the input filename ends with `.tpl`, the output filename will be the input filename without the `.tpl` extension, i.e.
 
-    envtpl whatever.conf.tpl
+    pyenvtpl whatever.conf.tpl
     # is equivalent to
-    envtpl -o whatever.conf whatever.conf.tpl
+    pyenvtpl -o whatever.conf whatever.conf.tpl
 
-By default, envtpl will **delete** the input template file. You can keep it by passing the `--keep-template` flag.
+By default, pyenvtpl will **delete** the input template file. You can keep it by passing the `--keep-template` flag.
 
 There's a special `environment(prefix='')` function that you can use as a kind of wildcard variable. If you have `hello.tpl`
 
@@ -81,7 +81,7 @@ There's a special `environment(prefix='')` function that you can use as a kind o
 
 and compile it using
 
-    FOO=world MY_baz=qux MY_foo=bar envtpl hello.tpl
+    FOO=world MY_baz=qux MY_foo=bar pyenvtpl hello.tpl
 
 You end up with
 
@@ -91,7 +91,7 @@ You end up with
 
 If you need more complex data structures you can pass in JSON as a string and use the `from_json` filter to turn it into an object you can use in your template:
 
-    FOO='[{"v": "hello"}, {"v": "world"}]' envtpl <<< '{% for x in FOO | from_json %}{{ x.v }}{% endfor %}'
+    FOO='[{"v": "hello"}, {"v": "world"}]' pyenvtpl <<< '{% for x in FOO | from_json %}{{ x.v }}{% endfor %}'
 
 gives
 
@@ -99,7 +99,7 @@ gives
 
 and
 
-    FOO='{"bar": "baz"}' envtpl <<< '{{ (FOO | from_json).bar }}'
+    FOO='{"bar": "baz"}' pyenvtpl <<< '{{ (FOO | from_json).bar }}'
 
 renders
 
@@ -115,8 +115,8 @@ In the CMD script I set up the runtime configuration using environment variables
     #!/bin/bash
     # start_container
 
-    envtpl /etc/redis.conf.tpl
+    pyenvtpl /etc/redis.conf.tpl
 
     redis-server
 
-This is the use case I've optimised for, so that's why envtpl by default will delete the original template file.
+This is the use case I've optimised for, so that's why pyenvtpl by default will delete the original template file.
