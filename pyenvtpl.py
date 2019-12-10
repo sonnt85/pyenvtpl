@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 '''
-envtpl - jinja2 template rendering with shell environment variables
+pyenvtpl - jinja2 template rendering with shell environment variables
 Copyright (C) 2014  Andreas Jansson
 
 This program is free software: you can redistribute it and/or modify
@@ -42,10 +42,10 @@ def main():
                         'filename, sans the %s extension. Otherwise, defaults to stdout.' %
                         (EXTENSION, EXTENSION))
     parser.add_argument('--allow-missing', action='store_true',
-                        help='Allow missing variables. By default, envtpl will die with exit '
+                        help='Allow missing variables. By default, pyenvtpl will die with exit '
                         'code 1 if an environment variable is missing')
     parser.add_argument('--keep-template', action='store_true',
-                        help='Keep original template file. By default, envtpl will delete '
+                        help='Keep original template file. By default, pyenvtpl will delete '
                         'the template file')
     args = parser.parse_args()
 
