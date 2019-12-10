@@ -133,6 +133,8 @@ def _render(template_name, loader, variables, undefined):
 
     template = env.get_template(template_name)
     template.globals['environment'] = get_environment
+    template.globals['exists'] = exists
+
 
     try:
         output = template.render(**variables)
@@ -146,7 +148,6 @@ def _render(template_name, loader, variables, undefined):
 
     return output
 
-
 @jinja2.contextfunction
 def get_environment(context, prefix=''):
     for key, value in sorted(context.items()):
@@ -158,6 +159,9 @@ def get_environment(context, prefix=''):
 def from_json(eval_ctx, value):
     return json.loads(value)
 
+@jinja2.contextfunction
+def exists(eval_ctx, path):
+    return os.path.exists(path)
 
 class Fatal(Exception):
     pass
