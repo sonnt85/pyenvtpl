@@ -166,8 +166,9 @@ def exists(eval_ctx, path):
 
 @jinja2.contextfunction
 def runcmd(eval_ctx, cmdstr):
-    p = subprocess.Popen(ast.literal_eval(cmdstr), stdout=subprocess.PIPE)
-    out = p.stdout.read().decode("utf-8") 
+    p = subprocess.Popen(cmdstr, stdout=subprocess.PIPE, shell=True)
+#    p = subprocess.Popen( stdout=subprocess.PIPE, *args, **kwargs)
+    out = p.stdout.read().decode("utf-8").rstrip("\n\r")
     return out
     
 class Fatal(Exception):
