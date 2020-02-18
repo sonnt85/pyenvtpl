@@ -41,10 +41,10 @@ def main():
                         'with "%s", the output filename is the same as the input '
                         'filename, sans the %s extension. Otherwise, defaults to stdout.' %
                         (EXTENSION, EXTENSION))
-    parser.add_argument('--allow-missing', action='store_true',
+    parser.add_argument('-a', '--allow-missing', action='store_true',
                         help='Allow missing variables. By default, pyenvtpl will die with exit '
                         'code 1 if an environment variable is missing')
-    parser.add_argument('--keep-template', action='store_true',
+    parser.add_argument('-k', '--keep-template', action='store_true',
                         help='Keep original template file. By default, pyenvtpl will delete '
                         'the template file')
     args = parser.parse_args()
@@ -64,7 +64,7 @@ def main():
 def process_file(input_filename, output_filename, variables,
                  die_on_missing_variable, remove_template):
     if not input_filename and not remove_template:
-        raise Fatal('--keep-template only makes sense if you specify an input file')
+        raise Fatal('--keep-template [-k] only makes sense if you specify an input file')
 
     if die_on_missing_variable:
         undefined = jinja2.StrictUndefined
@@ -134,7 +134,7 @@ def _render(template_name, loader, variables, undefined):
     template = env.get_template(template_name)
     template.globals['environment'] = get_environment
     template.globals['exists'] = exists
-    template.globals['runcmd'] = runcmd
+    template.globals['runshell'] = runshell
 
 
     try:
@@ -165,7 +165,7 @@ def exists(eval_ctx, path):
     return os.path.exists(path)
 
 @jinja2.contextfunction
-def runcmd(eval_ctx, cmdstr):
+def runshell(eval_ctx, cmdstr):
     p = subprocess.Popen(cmdstr, stdout=subprocess.PIPE, shell=True)
 #    p = subprocess.Popen( stdout=subprocess.PIPE, *args, **kwargs)
     out = p.stdout.read().decode("utf-8").rstrip("\n\r")
