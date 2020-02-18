@@ -23,7 +23,7 @@ import sys
 import argparse
 import jinja2
 import json
-import io, subprocess, ast
+import io, subprocess, re
 
 
 EXTENSION = '.tpl'
@@ -135,7 +135,8 @@ def _render(template_name, loader, variables, undefined):
     template.globals['environment'] = get_environment
     template.globals['exists'] = exists
     template.globals['runshell'] = runshell
-
+    template.globals['regex_match'] = regex_match
+    template.globals['regex_search'] = regex_search
 
     try:
         output = template.render(**variables)
@@ -166,10 +167,28 @@ def exists(eval_ctx, path):
 
 @jinja2.contextfunction
 def runshell(eval_ctx, cmdstr):
-    p = subprocess.Popen(cmdstr, stdout=subprocess.PIPE, shell=True)
+    p = subprocess.Popen(cmdstr, stdout=subprocess.PIPE, shell=True, executable='/bin/bash')
 #    p = subprocess.Popen( stdout=subprocess.PIPE, *args, **kwargs)
     out = p.stdout.read().decode("utf-8").rstrip("\n\r")
     return out
+
+@jinja2.contextfunction
+def regex_match(eval_ctx, pattern, string):
+    prog = re.compile(pattern)
+    result = prog.match(string)
+    if result:
+        return result.groups()
+    else:
+        return False
+
+@jinja2.contextfunction
+def regex_search(eval_ctx, pattern, string):
+    prog = re.compile(pattern)
+    result = prog.search(string)
+    if result:
+        return result.groups()
+    else:
+        return False
     
 class Fatal(Exception):
     pass
