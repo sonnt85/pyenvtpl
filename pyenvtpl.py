@@ -23,7 +23,7 @@ import sys
 import argparse
 import jinja2
 import json
-import io
+import io, subprocess, ast
 
 
 EXTENSION = '.tpl'
@@ -134,6 +134,7 @@ def _render(template_name, loader, variables, undefined):
     template = env.get_template(template_name)
     template.globals['environment'] = get_environment
     template.globals['exists'] = exists
+    template.globals['runcmd'] = runcmd
 
 
     try:
@@ -163,9 +164,14 @@ def from_json(eval_ctx, value):
 def exists(eval_ctx, path):
     return os.path.exists(path)
 
+@jinja2.contextfunction
+def runcmd(eval_ctx, cmdstr):
+    p = subprocess.Popen(ast.literal_eval(cmdstr), stdout=subprocess.PIPE)
+    out = p.stdout.read()
+    return out
+    
 class Fatal(Exception):
     pass
-
 
 if __name__ == '__main__':
     main()
